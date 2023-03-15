@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 800px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "OpenAI", "label": "OpenAI", "shape": "dot"}, {"color": "#97c2fc", "id": "ChatGPT", "label": "ChatGPT", "shape": "dot"}, {"color": "#97c2fc", "id": "Microsoft", "label": "Microsoft", "shape": "dot"}, {"color": "#97c2fc", "id": "InstructGPT", "label": "InstructGPT", "shape": "dot"}, {"color": "#97c2fc", "id": "GPT-3.5", "label": "GPT-3.5", "shape": "dot"}, {"color": "#97c2fc", "id": "methodology", "label": "methodology", "shape": "dot"}, {"color": "#97c2fc", "id": "conversational data", "label": "conversational data", "shape": "dot"}, {"color": "#97c2fc", "id": "Liam Fedus", "label": "Liam Fedus", "shape": "dot"}, {"color": "#97c2fc", "id": "John Schulman", "label": "John Schulman", "shape": "dot"}, {"color": "#97c2fc", "id": "intent", "label": "intent", "shape": "dot"}, {"color": "#97c2fc", "id": "Jan Leike", "label": "Jan Leike", "shape": "dot"}, {"color": "#97c2fc", "id": "RLHF", "label": "RLHF", "shape": "dot"}, {"color": "#97c2fc", "id": "Sandhini Agarwal", "label": "Sandhini Agarwal", "shape": "dot"}, {"color": "#97c2fc", "id": "risk", "label": "risk", "shape": "dot"}, {"color": "#97c2fc", "id": "product", "label": "product", "shape": "dot"}, {"color": "#97c2fc", "id": "use", "label": "use", "shape": "dot"}, {"color": "#97c2fc", "id": "issues", "label": "issues", "shape": "dot"}, {"color": "#97c2fc", "id": "RL", "label": "RL", "shape": "dot"}, {"color": "#97c2fc", "id": "We", "label": "We", "shape": "dot"}, {"color": "#97c2fc", "id": "lot", "label": "lot", "shape": "dot"}, {"color": "#97c2fc", "id": "next steps", "label": "next steps", "shape": "dot"}, {"color": "#97c2fc", "id": "viral ChatGPT", "label": "viral ChatGPT", "shape": "dot"}, {"color": "#97c2fc", "id": "made", "label": "made", "shape": "dot"}, {"color": "#97c2fc", "id": "become", "label": "become", "shape": "dot"}, {"color": "#97c2fc", "id": "critical", "label": "critical", "shape": "dot"}, {"color": "#97c2fc", "id": "soon", "label": "soon", "shape": "dot"}, {"color": "#97c2fc", "id": "model", "label": "model", "shape": "dot"}, {"color": "#97c2fc", "id": "biased", "label": "biased", "shape": "dot"}, {"color": "#97c2fc", "id": "bad", "label": "bad", "shape": "dot"}, {"color": "#97c2fc", "id": "prompts", "label": "prompts", "shape": "dot"}, {"color": "#97c2fc", "id": "refuse", "label": "refuse", "shape": "dot"}, {"color": "#97c2fc", "id": "iterative process", "label": "iterative process", "shape": "dot"}, {"color": "#97c2fc", "id": "refine", "label": "refine", "shape": "dot"}, {"color": "#97c2fc", "id": "technology", "label": "technology", "shape": "dot"}, {"color": "#97c2fc", "id": "new", "label": "new", "shape": "dot"}, {"color": "#97c2fc", "id": "assess", "label": "assess", "shape": "dot"}, {"color": "#97c2fc", "id": "examples", "label": "examples", "shape": "dot"}, {"color": "#97c2fc", "id": "terrible", "label": "terrible", "shape": "dot"}, {"color": "#97c2fc", "id": "things", "label": "things", "shape": "dot"}, {"color": "#97c2fc", "id": "wild", "label": "wild", "shape": "dot"}, {"color": "#97c2fc", "id": "jailbreaks", "label": "jailbreaks", "shape": "dot"}, {"color": "#97c2fc", "id": "problem", "label": "problem", "shape": "dot"}, {"color": "#97c2fc", "id": "users", "label": "users", "shape": "dot"}, {"color": "#97c2fc", "id": "convoluted", "label": "convoluted", "shape": "dot"}, {"color": "#97c2fc", "id": "methods", "label": "methods", "shape": "dot"}, {"color": "#97c2fc", "id": "training", "label": "training", "shape": "dot"}, {"color": "#97c2fc", "id": "data", "label": "data", "shape": "dot"}, {"color": "#97c2fc", "id": "future model", "label": "future model", "shape": "dot"}, {"color": "#97c2fc", "id": "targeted adversarial", "label": "targeted adversarial", "shape": "dot"}, {"color": "#97c2fc", "id": "situation", "label": "situation", "shape": "dot"}, {"color": "#97c2fc", "id": "problems", "label": "problems", "shape": "dot"}, {"color": "#97c2fc", "id": "anticipate", "label": "anticipate", "shape": "dot"}, {"color": "#97c2fc", "id": "proactively", "label": "proactively", "shape": "dot"}, {"color": "#97c2fc", "id": "stake", "label": "stake", "shape": "dot"}, {"color": "#97c2fc", "id": "lower", "label": "lower", "shape": "dot"}, {"color": "#97c2fc", "id": "context", "label": "context", "shape": "dot"}, {"color": "#97c2fc", "id": "matters", "label": "matters", "shape": "dot"}, {"color": "#97c2fc", "id": "Google", "label": "Google", "shape": "dot"}, {"color": "#97c2fc", "id": "one", "label": "one", "shape": "dot"}, {"color": "#97c2fc", "id": "fact", "label": "fact", "shape": "dot"}, {"color": "#97c2fc", "id": "issue", "label": "issue", "shape": "dot"}, {"color": "#97c2fc", "id": "search", "label": "search", "shape": "dot"}, {"color": "#97c2fc", "id": "playful", "label": "playful", "shape": "dot"}, {"color": "#97c2fc", "id": "line", "label": "line", "shape": "dot"}, {"color": "#97c2fc", "id": "useful", "label": "useful", "shape": "dot"}, {"color": "#97c2fc", "id": "contexts", "label": "contexts", "shape": "dot"}, {"color": "#97c2fc", "id": "pressure", "label": "pressure", "shape": "dot"}, {"color": "#97c2fc", "id": "building", "label": "building", "shape": "dot"}, {"color": "#97c2fc", "id": "models", "label": "models", "shape": "dot"}, {"color": "#97c2fc", "id": "Bing Chat", "label": "Bing Chat", "shape": "dot"}, {"color": "#97c2fc", "id": "customized", "label": "customized", "shape": "dot"}, {"color": "#97c2fc", "id": "advancements", "label": "advancements", "shape": "dot"}, {"color": "#97c2fc", "id": "collecting", "label": "collecting", "shape": "dot"}, {"color": "#97c2fc", "id": "better decisions", "label": "better decisions", "shape": "dot"}, {"color": "#97c2fc", "id": "language model", "label": "language model", "shape": "dot"}, {"color": "#97c2fc", "id": "chatbot", "label": "chatbot", "shape": "dot"}, {"color": "#97c2fc", "id": "uses", "label": "uses", "shape": "dot"}, {"color": "#97c2fc", "id": "everything", "label": "everything", "shape": "dot"}, {"color": "#97c2fc", "id": "extent", "label": "extent", "shape": "dot"}, {"color": "#97c2fc", "id": "politics", "label": "politics", "shape": "dot"}, {"color": "#97c2fc", "id": "limitations", "label": "limitations", "shape": "dot"}, {"color": "#97c2fc", "id": "finished", "label": "finished", "shape": "dot"}, {"color": "#97c2fc", "id": "clear", "label": "clear", "shape": "dot"}, {"color": "#97c2fc", "id": "products", "label": "products", "shape": "dot"}, {"color": "#97c2fc", "id": "behavior", "label": "behavior", "shape": "dot"}, {"color": "#97c2fc", "id": "stakes", "label": "stakes", "shape": "dot"}, {"color": "#97c2fc", "id": "year", "label": "year", "shape": "dot"}, {"color": "#97c2fc", "id": "big", "label": "big", "shape": "dot"}, {"color": "#97c2fc", "id": "factual", "label": "factual", "shape": "dot"}, {"color": "#97c2fc", "id": "walk", "label": "walk", "shape": "dot"}, {"color": "#97c2fc", "id": "different", "label": "different", "shape": "dot"}, {"color": "#97c2fc", "id": "tech giants", "label": "tech giants", "shape": "dot"}, {"color": "#97c2fc", "id": "chatbots", "label": "chatbots", "shape": "dot"}, {"color": "#97c2fc", "id": "challenges", "label": "challenges", "shape": "dot"}, {"color": "#97c2fc", "id": "AI search", "label": "AI search", "shape": "dot"}, {"color": "#97c2fc", "id": "don\u0027t", "label": "don\u0027t", "shape": "dot"}, {"color": "#97c2fc", "id": "Stable Diffusion", "label": "Stable Diffusion", "shape": "dot"}, {"color": "#97c2fc", "id": "video", "label": "video", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027iRobot\u0027", "label": "\u0027iRobot\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027homes\u0027", "label": "\u0027homes\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027AI\u0027", "label": "\u0027AI\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027faster\u0027", "label": "\u0027faster\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Runway\u0027", "label": "\u0027Runway\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027video\u0027", "label": "\u0027video\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027phrases\u0027", "label": "\u0027phrases\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027MIT Technology Review\u0027", "label": "\u0027MIT Technology Review\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027prepare\u0027", "label": "\u0027prepare\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "Silicon Valley", "label": "Silicon Valley", "shape": "dot"}, {"color": "#97c2fc", "id": "AI", "label": "AI", "shape": "dot"}, {"color": "#97c2fc", "id": "content", "label": "content", "shape": "dot"}, {"color": "#97c2fc", "id": "millions", "label": "millions", "shape": "dot"}, {"color": "#97c2fc", "id": "Sandhya Venkatachalam", "label": "Sandhya Venkatachalam", "shape": "dot"}, {"color": "#97c2fc", "id": "Khosla Ventures", "label": "Khosla Ventures", "shape": "dot"}, {"color": "#97c2fc", "id": "Meta", "label": "Meta", "shape": "dot"}, {"color": "#97c2fc", "id": "Snap", "label": "Snap", "shape": "dot"}, {"color": "#97c2fc", "id": "Instacart", "label": "Instacart", "shape": "dot"}, {"color": "#97c2fc", "id": "North American tech industry", "label": "North American tech industry", "shape": "dot"}, {"color": "#97c2fc", "id": "startup deals", "label": "startup deals", "shape": "dot"}, {"color": "#97c2fc", "id": "College students", "label": "College students", "shape": "dot"}, {"color": "#97c2fc", "id": "Job seekers", "label": "Job seekers", "shape": "dot"}, {"color": "#97c2fc", "id": "Authors", "label": "Authors", "shape": "dot"}, {"color": "#97c2fc", "id": "Tech Industry", "label": "Tech Industry", "shape": "dot"}, {"color": "#97c2fc", "id": "deals", "label": "deals", "shape": "dot"}, {"color": "#97c2fc", "id": "money", "label": "money", "shape": "dot"}, {"color": "#97c2fc", "id": "tasks", "label": "tasks", "shape": "dot"}, {"color": "#97c2fc", "id": "Anthropic", "label": "Anthropic", "shape": "dot"}, {"color": "#97c2fc", "id": "NFX", "label": "NFX", "shape": "dot"}, {"color": "#97c2fc", "id": "generative AI", "label": "generative AI", "shape": "dot"}, {"color": "#97c2fc", "id": "CB Insights", "label": "CB Insights", "shape": "dot"}, {"color": "#97c2fc", "id": "250 generative AI", "label": "250 generative AI", "shape": "dot"}, {"color": "#97c2fc", "id": "EpochAI", "label": "EpochAI", "shape": "dot"}, {"color": "#97c2fc", "id": "$500 million", "label": "$500 million", "shape": "dot"}, {"color": "#97c2fc", "id": "Neeva", "label": "Neeva", "shape": "dot"}, {"color": "#97c2fc", "id": "James Currier", "label": "James Currier", "shape": "dot"}, {"color": "#97c2fc", "id": "every 14 years", "label": "every 14 years", "shape": "dot"}, {"color": "#97c2fc", "id": "San Francisco", "label": "San Francisco", "shape": "dot"}, {"color": "#97c2fc", "id": "generative AI events", "label": "generative AI events", "shape": "dot"}, {"color": "#97c2fc", "id": "Hayes Valley", "label": "Hayes Valley", "shape": "dot"}, {"color": "#97c2fc", "id": "Cerebral Valley", "label": "Cerebral Valley", "shape": "dot"}, {"color": "#97c2fc", "id": "Jasper", "label": "Jasper", "shape": "dot"}, {"color": "#97c2fc", "id": "copy", "label": "copy", "shape": "dot"}, {"color": "#97c2fc", "id": "quizzes", "label": "quizzes", "shape": "dot"}, {"color": "#97c2fc", "id": "Stability AI", "label": "Stability AI", "shape": "dot"}, {"color": "#97c2fc", "id": "images", "label": "images", "shape": "dot"}, {"color": "#97c2fc", "id": "Medicine", "label": "Medicine", "shape": "dot"}, {"color": "#97c2fc", "id": "Law", "label": "Law", "shape": "dot"}, {"color": "#97c2fc", "id": "Dario Amodei", "label": "Dario Amodei", "shape": "dot"}, {"color": "#97c2fc", "id": "tell truth", "label": "tell truth", "shape": "dot"}, {"color": "#97c2fc", "id": "Images", "label": "Images", "shape": "dot"}, {"color": "#97c2fc", "id": "Generative AI", "label": "Generative AI", "shape": "dot"}, {"color": "#97c2fc", "id": "Fields", "label": "Fields", "shape": "dot"}, {"color": "#97c2fc", "id": "FTC", "label": "FTC", "shape": "dot"}, {"color": "#97c2fc", "id": "Companies", "label": "Companies", "shape": "dot"}, {"color": "#97c2fc", "id": "Venture Capitalist", "label": "Venture Capitalist", "shape": "dot"}, {"color": "#97c2fc", "id": "Kool Aid", "label": "Kool Aid", "shape": "dot"}, {"color": "#97c2fc", "id": "People", "label": "People", "shape": "dot"}, {"color": "#97c2fc", "id": "Release", "label": "Release", "shape": "dot"}, {"color": "#97c2fc", "id": "Data", "label": "Data", "shape": "dot"}, {"color": "#97c2fc", "id": "Jobs", "label": "Jobs", "shape": "dot"}, {"color": "#97c2fc", "id": "Scammers", "label": "Scammers", "shape": "dot"}, {"color": "#97c2fc", "id": "Humans", "label": "Humans", "shape": "dot"}, {"color": "#97c2fc", "id": "AGI", "label": "AGI", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Stephen Hawking\u0027", "label": "\u0027Stephen Hawking\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027end of human race\u0027", "label": "\u0027end of human race\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Kelsey Piper\u0027", "label": "\u0027Kelsey Piper\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027increasingly plausible\u0027", "label": "\u0027increasingly plausible\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Mitchell\u0027", "label": "\u0027Mitchell\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027criteria for AI\u0027", "label": "\u0027criteria for AI\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Melanie Mitchell\u0027", "label": "\u0027Melanie Mitchell\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027robots like movies\u0027", "label": "\u0027robots like movies\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Google\u0027", "label": "\u0027Google\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027critique of bias\u0027", "label": "\u0027critique of bias\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Timnit Gebru\u0027", "label": "\u0027Timnit Gebru\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Margaret Mitchell\u0027", "label": "\u0027Margaret Mitchell\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027tech companies\u0027", "label": "\u0027tech companies\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027harms of products\u0027", "label": "\u0027harms of products\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027ethical ones\u0027", "label": "\u0027ethical ones\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Peter Welinder\u0027", "label": "\u0027Peter Welinder\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027Vox\u0027", "label": "\u0027Vox\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027explanatory journalism\u0027", "label": "\u0027explanatory journalism\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "\u0027financial contributions\u0027", "label": "\u0027financial contributions\u0027", "shape": "dot"}, {"color": "#97c2fc", "id": "Panic", "label": "Panic", "shape": "dot"}, {"color": "#97c2fc", "id": "Machines", "label": "Machines", "shape": "dot"}, {"color": "#97c2fc", "id": "LLMs", "label": "LLMs", "shape": "dot"}, {"color": "#97c2fc", "id": "Capabilities", "label": "Capabilities", "shape": "dot"}, {"color": "#97c2fc", "id": "Venture Capitalists", "label": "Venture Capitalists", "shape": "dot"}, {"color": "#97c2fc", "id": "Operate", "label": "Operate", "shape": "dot"}, {"color": "#97c2fc", "id": "Anthropocentric", "label": "Anthropocentric", "shape": "dot"}, {"color": "#97c2fc", "id": "Sentience", "label": "Sentience", "shape": "dot"}, {"color": "#97c2fc", "id": "Hysteria", "label": "Hysteria", "shape": "dot"}, {"color": "#97c2fc", "id": "Real Harm", "label": "Real Harm", "shape": "dot"}, {"color": "#97c2fc", "id": "Corporations", "label": "Corporations", "shape": "dot"}, {"color": "#97c2fc", "id": "Gold Rush", "label": "Gold Rush", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "OpenAI", "label": "built", "to": "ChatGPT"}, {"from": "OpenAI", "label": "signed", "to": "Microsoft"}, {"from": "OpenAI", "label": "released", "to": "InstructGPT"}, {"from": "ChatGPT", "label": "fine-tuned", "to": "GPT-3.5"}, {"from": "InstructGPT", "label": "fine-tuned", "to": "GPT-3.5"}, {"from": "OpenAI", "label": "used", "to": "methodology"}, {"from": "OpenAI", "label": "added", "to": "conversational data"}, {"from": "Liam Fedus", "label": "fine-tune", "to": "ChatGPT"}, {"from": "John Schulman", "label": "infer", "to": "intent"}, {"from": "Jan Leike", "label": "use", "to": "RLHF"}, {"from": "Sandhini Agarwal", "label": "assess", "to": "risk"}, {"from": "John Schulman", "label": "beta-test", "to": "product"}, {"from": "OpenAI", "label": "observe", "to": "use"}, {"from": "Sandhini Agarwal", "label": "solve", "to": "issues"}, {"from": "Liam Fedus", "label": "use", "to": "RL"}, {"from": "ChatGPT", "label": "made", "to": "issues"}, {"from": "We", "label": "have", "to": "lot"}, {"from": "next steps", "label": "is", "to": "lot"}, {"from": "viral ChatGPT", "label": "has gotten", "to": "made"}, {"from": "issues", "label": "bubble up", "to": "become"}, {"from": "critical", "label": "solve", "to": "soon"}, {"from": "model", "label": "is", "to": "biased"}, {"from": "ChatGPT", "label": "refuse", "to": "bad"}, {"from": "prompts", "label": "make", "to": "refuse"}, {"from": "iterative process", "label": "deploy", "to": "refine"}, {"from": "technology", "label": "evolves", "to": "new"}, {"from": "issues", "label": "emerge", "to": "assess"}, {"from": "examples", "label": "found", "to": "terrible"}, {"from": "things", "label": "seen", "to": "wild"}, {"from": "jailbreaks", "label": "fix", "to": "problem"}, {"from": "users", "label": "try", "to": "convoluted"}, {"from": "methods", "label": "get", "to": "bad"}, {"from": "training", "label": "testing", "to": "data"}, {"from": "future model", "label": "feeds", "to": "data"}, {"from": "targeted adversarial", "label": "improve", "to": "situation"}, {"from": "problems", "label": "go away", "to": "anticipate"}, {"from": "problems", "label": "mitigate", "to": "proactively"}, {"from": "stake", "label": "higher", "to": "lower"}, {"from": "context", "label": "used", "to": "matters"}, {"from": "Google", "label": "Microsoft", "to": "one"}, {"from": "fact", "label": "became", "to": "issue"}, {"from": "search", "label": "different", "to": "playful"}, {"from": "line", "label": "creating", "to": "useful"}, {"from": "contexts", "label": "vary", "to": "pressure"}, {"from": "building", "label": "underlying", "to": "models"}, {"from": "Bing Chat", "label": "powered", "to": "customized"}, {"from": "ChatGPT", "label": "GPT-3.5", "to": "advancements"}, {"from": "collecting", "label": "training", "to": "data"}, {"from": "better decisions", "label": "lessen", "to": "issue"}, {"from": "language model", "label": "search", "to": "chatbot"}, {"from": "uses", "label": "walk", "to": "line"}, {"from": "technology", "label": "works", "to": "everything"}, {"from": "extent", "label": "probe", "to": "politics"}, {"from": "ChatGPT", "label": "fails", "to": "lot"}, {"from": "limitations", "label": "technology", "to": "finished"}, {"from": "problems", "label": "solved", "to": "clear"}, {"from": "technology", "label": "early days", "to": "problems"}, {"from": "products", "label": "API", "to": "technology"}, {"from": "contexts", "label": "desired", "to": "behavior"}, {"from": "stakes", "label": "now", "to": "year"}, {"from": "Google", "label": "Microsoft", "to": "big"}, {"from": "issue", "label": "search", "to": "factual"}, {"from": "walk", "label": "line", "to": "different"}, {"from": "uses", "label": "creating", "to": "useful"}, {"from": "Bing Chat", "label": "version", "to": "OpenAI"}, {"from": "ChatGPT", "label": "GPT-4", "to": "customized"}, {"from": "tech giants", "label": "use", "to": "chatbots"}, {"from": "challenges", "label": "building", "to": "models"}, {"from": "AI search", "label": "trust", "to": "don\u0027t"}, {"from": "Stable Diffusion", "label": "generative", "to": "video"}, {"from": "stakes", "label": "higher", "to": "lower"}, {"from": "\u0027iRobot\u0027", "label": "\u0027collect data\u0027", "to": "\u0027homes\u0027"}, {"from": "\u0027AI\u0027", "label": "\u0027generate drugs\u0027", "to": "\u0027faster\u0027"}, {"from": "\u0027Runway\u0027", "label": "\u0027launched AI\u0027", "to": "\u0027video\u0027"}, {"from": "\u0027AI\u0027", "label": "\u0027generate images\u0027", "to": "\u0027phrases\u0027"}, {"from": "\u0027MIT Technology Review\u0027", "label": "\u0027in-depth reporting\u0027", "to": "\u0027prepare\u0027"}, {"from": "Silicon Valley", "label": "embracing", "to": "AI"}, {"from": "AI", "label": "creating", "to": "content"}, {"from": "ChatGPT", "label": "used by", "to": "millions"}, {"from": "Sandhya Venkatachalam", "label": "partner of", "to": "Khosla Ventures"}, {"from": "Google", "label": "rolling out", "to": "chatbots"}, {"from": "Microsoft", "label": "rolling out", "to": "chatbots"}, {"from": "Meta", "label": "fast-tracking", "to": "AI"}, {"from": "Snap", "label": "fast-tracking", "to": "AI"}, {"from": "Instacart", "label": "fast-tracking", "to": "AI"}, {"from": "North American tech industry", "label": "saw drop in", "to": "startup deals"}, {"from": "College students", "label": "using", "to": "ChatGPT"}, {"from": "Job seekers", "label": "using", "to": "ChatGPT"}, {"from": "Authors", "label": "using", "to": "ChatGPT"}, {"from": "Tech Industry", "label": "saw drop", "to": "deals"}, {"from": "Silicon Valley", "label": "more tight", "to": "money"}, {"from": "ChatGPT", "label": "used for", "to": "tasks"}, {"from": "Anthropic", "label": "invested by", "to": "Google"}, {"from": "NFX", "label": "invested in", "to": "generative AI"}, {"from": "CB Insights", "label": "identified", "to": "250 generative AI"}, {"from": "EpochAI", "label": "average cost", "to": "$500 million"}, {"from": "Neeva", "label": "focus on", "to": "search"}, {"from": "James Currier", "label": "technology waves", "to": "every 14 years"}, {"from": "San Francisco", "label": "host", "to": "generative AI events"}, {"from": "Hayes Valley", "label": "nicknamed", "to": "Cerebral Valley"}, {"from": "Jasper", "label": "creates marketing", "to": "copy"}, {"from": "OpenAI", "label": "used for", "to": "quizzes"}, {"from": "Stability AI", "label": "autogenerate", "to": "images"}, {"from": "Medicine", "label": "transform", "to": "AI"}, {"from": "Law", "label": "transform", "to": "AI"}, {"from": "Dario Amodei", "label": "fundamental problems", "to": "tell truth"}, {"from": "Stability AI", "label": "Generates", "to": "Images"}, {"from": "Generative AI", "label": "Transforms", "to": "Fields"}, {"from": "FTC", "label": "Warns", "to": "Companies"}, {"from": "Venture Capitalist", "label": "Thinks", "to": "Kool Aid"}, {"from": "Generative AI", "label": "Makes Factual Errors", "to": "People"}, {"from": "Google", "label": "Competes With", "to": "Microsoft"}, {"from": "Google", "label": "Moves Slowly", "to": "Release"}, {"from": "AI", "label": "Reflects Biases", "to": "Data"}, {"from": "AI", "label": "Creates Economic Instability", "to": "Jobs"}, {"from": "AI", "label": "Misused", "to": "Scammers"}, {"from": "AI", "label": "Outsmarts", "to": "Humans"}, {"from": "OpenAI", "label": "Worries", "to": "AGI"}, {"from": "\u0027Stephen Hawking\u0027", "label": "\u0027stated\u0027", "to": "\u0027end of human race\u0027"}, {"from": "\u0027Kelsey Piper\u0027", "label": "\u0027wrote\u0027", "to": "\u0027increasingly plausible\u0027"}, {"from": "\u0027Mitchell\u0027", "label": "\u0027said\u0027", "to": "\u0027criteria for AI\u0027"}, {"from": "\u0027Melanie Mitchell\u0027", "label": "\u0027asked\u0027", "to": "\u0027robots like movies\u0027"}, {"from": "\u0027Google\u0027", "label": "\u0027censored\u0027", "to": "\u0027critique of bias\u0027"}, {"from": "\u0027Timnit Gebru\u0027", "label": "\u0027pushed out\u0027", "to": "\u0027Google\u0027"}, {"from": "\u0027Margaret Mitchell\u0027", "label": "\u0027pushed out\u0027", "to": "\u0027Google\u0027"}, {"from": "\u0027tech companies\u0027", "label": "\u0027weighing\u0027", "to": "\u0027harms of products\u0027"}, {"from": "\u0027tech companies\u0027", "label": "\u0027against\u0027", "to": "\u0027ethical ones\u0027"}, {"from": "\u0027Peter Welinder\u0027", "label": "\u0027VP title\u0027", "to": "\u0027Google\u0027"}, {"from": "\u0027Vox\u0027", "label": "\u0027seek\u0027", "to": "\u0027explanatory journalism\u0027"}, {"from": "\u0027Vox\u0027", "label": "\u0027accept\u0027", "to": "\u0027financial contributions\u0027"}, {"from": "ChatGPT", "label": "Generate", "to": "Panic"}, {"from": "Humans", "label": "Interpret", "to": "Machines"}, {"from": "LLMs", "label": "Augment", "to": "Capabilities"}, {"from": "Venture Capitalists", "label": "Invest", "to": "LLMs"}, {"from": "LLMs", "label": "Train", "to": "Operate"}, {"from": "Humans", "label": "Humanize", "to": "ChatGPT"}, {"from": "AI", "label": "Defined", "to": "Anthropocentric"}, {"from": "AI", "label": "Distinguished", "to": "Sentience"}, {"from": "Hysteria", "label": "Sparked", "to": "ChatGPT"}, {"from": "Real Harm", "label": "Obscured", "to": "Hysteria"}, {"from": "Corporations", "label": "Benefit", "to": "Gold Rush"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
